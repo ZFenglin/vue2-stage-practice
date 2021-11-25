@@ -1,4 +1,5 @@
 import { isObject } from "../utils"
+import { arrayMethods } from "./array"
 
 class Observe {
     constructor(data) {
@@ -7,15 +8,34 @@ class Observe {
             value: this,
             enumerable: false,
         })
-        this.walk(data)
+        if (Array.isArray(data)) {
+            // 数组方法改写
+            data.__proto__ = arrayMethods
+            // 数组响应式处理
+            this.observeArray(data)
+        } else {
+            this.walk(data)
+        }
     }
     /**
+     * 对象对象响应式处理
      * 遍历数据利用defineReactive进行响应式处理
      * @param {*} data 
      */
     walk(data) {
         Object.keys(data).forEach(key => {
             defineReactive(data, key, data[key])
+        })
+    }
+
+    /**
+     * 数组响应式处理
+     * 只处理数组中的每一项，下标不处理
+     * @param {*} arr 
+     */
+    observeArray(arr) {
+        arr.forEach(item => {
+            observe(item)
         })
     }
 
