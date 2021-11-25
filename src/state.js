@@ -13,6 +13,25 @@ export function initState(vm) {
 }
 
 /**
+ * 数据代理
+ * 将data代理到vm上
+ * @param {*} vm 
+ * @param {*} source 
+ * @param {*} key 
+ */
+function proxy(vm, source, key) {
+    Object.defineProperty(vm, key, {
+        get() {
+            return vm[source][key]
+        },
+        set(newVal) {
+            vm[source][key] = newVal
+        }
+    })
+}
+
+
+/**
  * data属性初始化
  * 处理数据data获取和响应式
  * @param {*} vm 
@@ -20,5 +39,8 @@ export function initState(vm) {
 function initData(vm) {
     let data = vm.$options.data
     data = vm._data = isFunction(data) ? data.call(vm) : data
+    for (const key in data) {
+        proxy(vm, "_data", key)
+    }
     observe(data)
 }
