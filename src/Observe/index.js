@@ -49,18 +49,15 @@ class Observe {
  * @param {*} val 
  */
 function defineReactive(data, key, val) {
-    console.log('响应式处理' + key)
     // val进行响应式
     observe(val)
     Object.defineProperty(data, key, {
         get() {
-            console.log(`获取${key}的值`)
             return val
         },
         set(newVal) {
             // 新值增加响应式
             observe(newVal)
-            console.log(`${key}的值发生了改变，新值为${newVal}`)
             val = newVal
         }
     })

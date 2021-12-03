@@ -27,7 +27,7 @@ export function initMixin(Vue) {
         if (!options.render) {
             let template = options.template
             if (!template && el) {
-                template = el.outerHTML
+                template = el.outerHTML // 获取描述元素（包括其后代）的序列化HTML片段
             }
             options.render = compileToFunction(template)
         }
