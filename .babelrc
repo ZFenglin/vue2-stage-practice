@@ -1,6 +1,6 @@
 {
     // 预设代码转义
-    "preset": [
+    "presets": [
         "@babel/preset-env"
     ]
 }
