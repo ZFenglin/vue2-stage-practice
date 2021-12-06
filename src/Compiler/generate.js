@@ -69,5 +69,5 @@ function genChildren(el) {
 
 export function generate(root) {
     const children = genChildren(root)
-    return `_c(${root.tag}, ${root.attrs ? genProps(root.attrs) : 'undefined'},${children ? children : ''})`
+    return `_c("${root.tag}", ${root.attrs ? genProps(root.attrs) : 'undefined'},${children ? children : ''})`
 }

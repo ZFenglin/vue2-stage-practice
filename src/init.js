@@ -1,4 +1,5 @@
 import { compileToFunction } from "./Compiler/index"
+import { mountComponent } from "./lifecycle"
 import { initState } from "./state"
 
 /**
@@ -31,6 +32,7 @@ export function initMixin(Vue) {
             }
             options.render = compileToFunction(template)
         }
+        mountComponent(vm, el)
     }
 }
 
