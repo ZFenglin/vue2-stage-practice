@@ -1,6 +1,8 @@
+import { generate } from "./generate"
 import { parserHtml } from "./parser"
 
 export function compileToFunction(template) {
     let root = parserHtml(template)
-    console.log(root)
+    let code = generate(root)
+    console.log(code)
 }
