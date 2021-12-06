@@ -23,7 +23,7 @@ export function initMixin(Vue) {
         const vm = this
         const options = vm.$options
         el = document.querySelector(el)
-
+        vm.$el = el
         // 获取render函数（优先级 render>template>el）
         if (!options.render) {
             let template = options.template
