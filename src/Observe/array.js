@@ -22,6 +22,10 @@ medthods.forEach(method => {
         if (inserted) {
             ob.observeArray(inserted)
         }
+        // 方法调用Dep更新
+        if (ob.dep) {
+            ob.dep.notify()
+        }
         return result
     }
 })

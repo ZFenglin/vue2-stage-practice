@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <div id="app" a="1">hello {{name}}</div>
+    <div id="app" a="1">{{arr}}</div>
     <script src="./dist/vue.js"></script>
     <script>
         // viewModel 数据模型
@@ -19,17 +19,15 @@
             data() {
                 return {
                     name: 'zfl',
+                    arr: [1, 2, 3, 4, 5]
                 }
             },
         })
 
         setTimeout(() => {
-            vm.name = 'zfl2'
-            vm.name = 'zfl3'
-            console.log(vm.name)
-            vm.$nextTick(() => {
-                console.log(document.getElementsByTagName('div')[0].innerText)
-            })
+            vm.arr.push(6)
+            vm.arr.pop()
+            vm.arr.splice(0, 1, 7)
         }, 1000)
     </script>
 </body>

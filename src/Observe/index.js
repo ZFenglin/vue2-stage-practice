@@ -4,6 +4,9 @@ import Dep from "./dep"
 
 class Observe {
     constructor(data) {
+        // 为每个Observe设置个dep用于监听数组方法调用
+        this.dep = new Dep()
+
         // 设置__ob__属性，并置为不可枚举
         Object.defineProperty(data, '__ob__', {
             value: this,
@@ -44,26 +47,48 @@ class Observe {
 }
 
 /**
+ * 数组子项dep收集当前watcher
+ * @param {*} value 
+ */
+function dependArray(value) {
+    for (let index = 0; index < value.length; index++) {
+        const current = value[index];
+        current.__ob__ && current.__ob__.dep.depend()
+        if (Array.isArray(current)) {
+            dependArray(current)
+        }
+    }
+}
+
+/**
  * 利用Object.defineProperty进行响应式处理
  * @param {*} data 
  * @param {*} key 
- * @param {*} val 
+ * @param {*} value 
  */
-function defineReactive(data, key, val) {
+function defineReactive(data, key, value) {
     // val进行响应式
-    observe(val)
+    const childernObj = observe(value)
     let dep = new Dep()
     Object.defineProperty(data, key, {
         get() {
             if (Dep.target) {
                 dep.depend()
+                if (childernObj) {
+                    // value的Observer上dep收集触发
+                    childernObj.dep.depend()
+                    if (Array.isArray(value)) {
+                        dependArray(value)
+                    }
+                }
             }
-            return val
+            return value
         },
         set(newVal) {
+            if (newVal === value) return
             // 新值增加响应式
             observe(newVal)
-            val = newVal
+            value = newVal
             dep.notify()
         }
     })
@@ -77,7 +102,7 @@ function defineReactive(data, key, val) {
  */
 export function observe(data) {
     if (!isObject(data)) return
-    if (data.__ob__) return
+    if (data.__ob__) return data.__ob__
     return new Observe(data)
 }
 

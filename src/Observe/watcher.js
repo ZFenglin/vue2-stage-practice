@@ -42,7 +42,6 @@ class watcher {
      * 渲染更新处理
      */
     run() {
-        console.log('watcher update')
         this.get()
     }
 
