@@ -1,3 +1,4 @@
+import Dep from "./Observe/dep"
 import { observe } from "./Observe/index"
 import Watcher from "./Observe/watcher"
 import { isFunction } from "./utils"
@@ -75,7 +76,6 @@ function initWatch(vm) {
     const watch = vm.$options.watch
     for (const key in watch) {
         let handler = watch[key]
-        console.log('initWatch', key)
         if (Array.isArray(handler)) {
             handler.forEach(fn => {
                 createWacther(vm, key, fn)
@@ -103,13 +103,33 @@ function createWacther(vm, key, handler) {
  */
 function initComputed(vm) {
     const computed = vm.$options.computed
+    // 利用对象收集所有computed的watcher
+    const watchers = vm._computedWatchers = Object.create(null)
     if (computed) {
         for (const key in computed) {
             const userDef = computed[key]
             let getter = typeof userDef === 'function' ? userDef : userDef.get
-            new Watcher(vm, getter, () => { }, { lazy: true })
+            watchers[key] = new Watcher(vm, getter, () => { }, { lazy: true })
             defineComputed(vm, key, userDef)
         }
+    }
+}
+
+/**
+ * 处理计算属性是否进行数据获取
+ * @param {*} key 
+ * @returns 
+ */
+function createComputedGetter(key) {
+    return function computedGetter() {
+        let watcher = this._computedWatchers[key]
+        if (watcher.dirty) {
+            watcher.evaluate()
+            if (Dep.target) {
+                watcher.depend()
+            }
+        }
+        return watcher.value
     }
 }
 
@@ -124,7 +144,7 @@ function defineComputed(vm, key, userDef) {
     if (typeof userDef == 'function') {
         shareProperty.get = userDef
     } else {
-        shareProperty.get = userDef.get
+        shareProperty.get = createComputedGetter(key)
         shareProperty.set = userDef.set || (() => { })
     }
     Object.defineProperty(vm, key, shareProperty)

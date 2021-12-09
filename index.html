@@ -23,14 +23,15 @@
                 }
             },
             computed: {
-                fullName() {
-                    console.log('fullName computed');
-                    return this.firstName + ' ' + this.lastName
+                fullName: {
+                    get: function () {
+                        return this.firstName + ' ' + this.lastName
+                    },
                 }
             }
         })
         setTimeout(() => {
-            vm.firstName = 'Tom'
+            vm.firstName = 'Jane'
         }, 1000);
 
     </script>

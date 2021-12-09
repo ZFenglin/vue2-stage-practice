@@ -33,12 +33,15 @@ class Dep {
 }
 
 // 设置需要用于触发收集的watcher
-Dep.target = null;
+Dep.target = null
+const targetStack = []
 export function addTarget(watcher) {
+    targetStack.push(watcher)
     Dep.target = watcher
 }
 export function removeTarget() {
-    Dep.target = null
+    targetStack.pop()
+    Dep.target = targetStack[targetStack.length - 1]
 }
 
 export default Dep

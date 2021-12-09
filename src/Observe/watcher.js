@@ -22,6 +22,9 @@ class Watcher {
         // 懒加载watcher
         this.lazy = !!options.lazy
 
+        // 决定当前是否为脏数据
+        this.dirty = this.lazy
+
         // 处理函数
         this.getter = typeof expOrFn === 'function' ? expOrFn : function () {
             let arr = expOrFn.split('.')
@@ -41,16 +44,21 @@ class Watcher {
      */
     get() {
         addTarget(this)
-        const value = this.getter()
+        const value = this.getter.call(this.vm)
         removeTarget()
         return value
     }
 
     /**
      * 页面渲染触发队列收集
+     * 对于懒加载的watcher则不会进行收集
      */
     update() {
-        queueWatcher(this)
+        if (this.lazy) {
+            this.dirty = true
+        } else {
+            queueWatcher(this)
+        }
     }
 
     /**
@@ -75,6 +83,25 @@ class Watcher {
             this.depIds.add(id)
             this.deps.push(dep)
             dep.addSub(this)
+        }
+    }
+
+    /**
+     * 懒加载watcher求值
+     */
+    evaluate() {
+        this.dirty = false
+        this.value = this.get()
+
+    }
+    /**
+     * 懒加载watcher收集当前所有的deps
+     */
+    depend() {
+        let i = this.deps.length
+        while (i--) {
+            // 此处会对子属性的watcher收集
+            this.deps[i].depend()
         }
     }
 }
