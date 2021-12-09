@@ -19,7 +19,6 @@ export function patch(oldNode, vnode) {
  * @returns 
  */
 function createElm(vnode) {
-    debugger
     let { tag, children, text } = vnode
     if (typeof tag === 'string') {
         vnode.el = document.createElement(tag)

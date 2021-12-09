@@ -1,5 +1,6 @@
 import { isObject } from "../utils"
 import { arrayMethods } from "./array"
+import Dep from "./dep"
 
 class Observe {
     constructor(data) {
@@ -51,14 +52,19 @@ class Observe {
 function defineReactive(data, key, val) {
     // val进行响应式
     observe(val)
+    let dep = new Dep()
     Object.defineProperty(data, key, {
         get() {
+            if (Dep.target) {
+                dep.depend()
+            }
             return val
         },
         set(newVal) {
             // 新值增加响应式
             observe(newVal)
             val = newVal
+            dep.notify()
         }
     })
 }
