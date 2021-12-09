@@ -30,6 +30,8 @@ export function initState(vm) {
     opts.data && initData(vm)
     // watch初始化
     opts.watch && initWatch(vm)
+    // computed初始化
+    opts.computed && initComputed(vm)
 }
 
 /**
@@ -93,4 +95,37 @@ function initWatch(vm) {
  */
 function createWacther(vm, key, handler) {
     return vm.$watch(key, handler)
+}
+
+/**
+ * computed初始化
+ * @param {*} vm 
+ */
+function initComputed(vm) {
+    const computed = vm.$options.computed
+    if (computed) {
+        for (const key in computed) {
+            const userDef = computed[key]
+            let getter = typeof userDef === 'function' ? userDef : userDef.get
+            new Watcher(vm, getter, () => { }, { lazy: true })
+            defineComputed(vm, key, userDef)
+        }
+    }
+}
+
+/**
+ * vm上定义computed属性
+ * @param {*} vm 
+ * @param {*} key 
+ * @param {*} userDef 
+ */
+function defineComputed(vm, key, userDef) {
+    let shareProperty = {}
+    if (typeof userDef == 'function') {
+        shareProperty.get = userDef
+    } else {
+        shareProperty.get = userDef.get
+        shareProperty.set = userDef.set || (() => { })
+    }
+    Object.defineProperty(vm, key, shareProperty)
 }

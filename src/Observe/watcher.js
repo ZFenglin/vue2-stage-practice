@@ -19,6 +19,9 @@ class Watcher {
         // 用户自定义watcher
         this.user = !!options.user
 
+        // 懒加载watcher
+        this.lazy = !!options.lazy
+
         // 处理函数
         this.getter = typeof expOrFn === 'function' ? expOrFn : function () {
             let arr = expOrFn.split('.')
@@ -30,7 +33,7 @@ class Watcher {
         }
 
         // 首次触发
-        this.value = this.get()
+        this.value = this.lazy ? undefined : this.get()
     }
 
     /**

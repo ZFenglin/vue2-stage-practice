@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <div id="app" a="1">{{person.name}}: {{person.age}}</div>
+    <div id="app" a="1">{{fullName}}</div>
     <script src="./dist/vue.js"></script>
     <script>
         // viewModel 数据模型
@@ -18,40 +18,19 @@
             el: '#app',
             data() {
                 return {
-                    person: {
-                        name: '张三',
-                        age: 18,
-                    },
+                    firstName: 'John',
+                    lastName: 'Doe',
                 }
             },
-
-            watch: {
-                'person': function (newVal, oldVal) {
-                    console.log('person: ', newVal, oldVal)
-                },
-                'person.name': function (newVal, oldVal) {
-                    console.log('person.name: ', newVal, oldVal)
-                },
-                person: [
-                    function (newVal, oldVal) {
-                        console.log('arr1: ', newVal, oldVal)
-                    },
-                    function (newVal, oldVal) {
-                        console.log('arr2: ', newVal, oldVal)
-                    },
-                ]
+            computed: {
+                fullName() {
+                    console.log('fullName computed');
+                    return this.firstName + ' ' + this.lastName
+                }
             }
         })
-
-        // vm.$watch('person', function (newValue, oldValue) {
-        //     console.log('$watch: ', newValue, oldValue)
-        // })
-
         setTimeout(() => {
-            vm.person = {
-                name: '王五',
-                age: 20,
-            }
+            vm.firstName = 'Tom'
         }, 1000);
 
     </script>
