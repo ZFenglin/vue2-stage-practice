@@ -25,6 +25,11 @@
 
         setTimeout(() => {
             vm.name = 'zfl2'
+            vm.name = 'zfl3'
+            console.log(vm.name)
+            vm.$nextTick(() => {
+                console.log(document.getElementsByTagName('div')[0].innerText)
+            })
         }, 1000)
     </script>
 </body>

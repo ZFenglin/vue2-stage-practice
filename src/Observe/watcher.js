@@ -1,4 +1,5 @@
 import { addTarget, removeTarget } from "./dep"
+import { queueWatcher } from "./scheduler"
 let id = 0
 class watcher {
     constructor(vm, expOrFn, cb, options) {
@@ -31,9 +32,17 @@ class watcher {
     }
 
     /**
-     * 页面渲染
+     * 页面渲染触发队列收集
      */
     update() {
+        queueWatcher(this)
+    }
+
+    /**
+     * 渲染更新处理
+     */
+    run() {
+        console.log('watcher update')
         this.get()
     }
 
