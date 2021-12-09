@@ -1,7 +1,7 @@
 import { addTarget, removeTarget } from "./dep"
 import { queueWatcher } from "./scheduler"
 let id = 0
-class watcher {
+class Watcher {
     constructor(vm, expOrFn, cb, options) {
         // 参数赋值
         this.vm = vm
@@ -11,12 +11,23 @@ class watcher {
 
         // 唯一id
         this.id = id++
-        // 处理函数
-        this.getter = expOrFn
 
         // Dep收集
         this.deps = []
         this.depIds = new Set()
+
+        // 用户自定义watcher
+        this.user = !!options.user
+
+        // 处理函数
+        this.getter = typeof expOrFn === 'function' ? expOrFn : function () {
+            let arr = expOrFn.split('.')
+            let val = this.vm
+            arr.forEach(attrName => {
+                val = val[attrName]
+            });
+            return val
+        }
 
         // 首次触发
         this.value = this.get()
@@ -27,8 +38,9 @@ class watcher {
      */
     get() {
         addTarget(this)
-        this.getter()
+        const value = this.getter()
         removeTarget()
+        return value
     }
 
     /**
@@ -42,7 +54,12 @@ class watcher {
      * 渲染更新处理
      */
     run() {
-        this.get()
+        const newVal = this.get()
+        const oldVal = this.value
+        if (newVal !== oldVal) {
+            this.cb.call(this.vm, newVal, oldVal)
+        }
+        this.value = newVal
     }
 
     /**
@@ -60,4 +77,4 @@ class watcher {
 }
 
 
-export default watcher
+export default Watcher

@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <div id="app" a="1">{{arr}}</div>
+    <div id="app" a="1">{{person.name}}: {{person.age}}</div>
     <script src="./dist/vue.js"></script>
     <script>
         // viewModel 数据模型
@@ -18,17 +18,42 @@
             el: '#app',
             data() {
                 return {
-                    name: 'zfl',
-                    arr: [1, 2, 3, 4, 5]
+                    person: {
+                        name: '张三',
+                        age: 18,
+                    },
                 }
             },
+
+            watch: {
+                'person': function (newVal, oldVal) {
+                    console.log('person: ', newVal, oldVal)
+                },
+                'person.name': function (newVal, oldVal) {
+                    console.log('person.name: ', newVal, oldVal)
+                },
+                person: [
+                    function (newVal, oldVal) {
+                        console.log('arr1: ', newVal, oldVal)
+                    },
+                    function (newVal, oldVal) {
+                        console.log('arr2: ', newVal, oldVal)
+                    },
+                ]
+            }
         })
 
+        // vm.$watch('person', function (newValue, oldValue) {
+        //     console.log('$watch: ', newValue, oldValue)
+        // })
+
         setTimeout(() => {
-            vm.arr.push(6)
-            vm.arr.pop()
-            vm.arr.splice(0, 1, 7)
-        }, 1000)
+            vm.person = {
+                name: '王五',
+                age: 20,
+            }
+        }, 1000);
+
     </script>
 </body>
 
