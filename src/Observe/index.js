@@ -32,12 +32,10 @@ class Observer {
         observe(value)
         Object.defineProperty(data, key, {
             get() {
-                console.log('get' + key)
                 return value
             },
             set(newVal) {
                 if (newVal === value) return
-                console.log('set' + key)
                 observe(newVal)
                 value = newVal
                 return value

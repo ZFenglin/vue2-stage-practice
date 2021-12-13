@@ -13,7 +13,6 @@ let methods = [
 
 methods.forEach(method => {
     arrayMethods[method] = function (...args) {
-        console.log(`执行了${method}方法`)
         let result = originalArrayMethods[method].apply(this, args)
         let inserted
         switch (method) {
