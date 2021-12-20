@@ -1,5 +1,6 @@
 import { isObject } from "../utils"
 import { arrayMethods } from "./array"
+import Dep from "./dep"
 
 class Observer {
     constructor(data) {
@@ -30,14 +31,19 @@ class Observer {
 
     defineReactive(data, key, value) {
         observe(value)
+        let dep = new Dep()
         Object.defineProperty(data, key, {
             get() {
+                if (Dep.target) {
+                    dep.depend()
+                }
                 return value
             },
             set(newVal) {
                 if (newVal === value) return
                 observe(newVal)
                 value = newVal
+                dep.notify()
                 return value
             }
         })
