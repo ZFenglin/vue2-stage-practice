@@ -1,4 +1,5 @@
 import { popTarget, pushTarget } from "./dep"
+import { queueWatcher } from "./scheduler"
 
 let id = 0
 
@@ -25,6 +26,10 @@ class Watcher {
     }
 
     update() {
+        queueWatcher(this)
+    }
+
+    run() {
         this.get()
     }
 
