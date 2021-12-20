@@ -20,13 +20,16 @@ class Dep {
     }
 }
 
+let stack = []
 
-Dep.target = null
-export function pushTarget(target) {
-    Dep.target = target
+export function pushTarget(wathcer) {
+    stack.push(wathcer)
+    Dep.target = wathcer
 }
+
 export function popTarget() {
-    Dep.target = null
+    stack.pop()
+    Dep.target = stack[stack.length - 1]
 }
 
 

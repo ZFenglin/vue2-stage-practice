@@ -9,45 +9,31 @@
 </head>
 
 <body>
-    <div id="app" a="1" style="color: blue;font-size: 12px;">
-        <p>{{message}}</p>
+    <div id="app">
+        <p>{{fullName}}</p>
     </div>
     <script src="./dist/vue.js"></script>
     <script>
         let vm = new Vue({
             data() {
                 return {
-                    message: 'Hello Vue.js!'
+                    fristName: 'zhu',
+                    lastName: 'fengling',
                 }
             },
-            watch: {
-                // // 1. 直接写函数
-                // message(newValue, oldValue) {
-                //     console.log('Old value: ' + oldValue)
-                //     console.log('New value: ' + newValue)
-                // },
-                // 2. 直接写数组(多个监听器)
-                message: [
-                    function (newValue, oldValue) {
-                        console.log('Old value: ' + oldValue)
-                        console.log('New value: ' + newValue)
+            computed: {
+                fullName: {
+                    get: function () {
+                        return this.fristName + ' ' + this.lastName
                     },
-                    function (newValue, oldValue) {
-                        console.log('Old2 value: ' + oldValue)
-                        console.log('New2 value: ' + newValue)
-                    },
-                ],
-            }
+                }
+            },
         })
         vm.$mount('#app')
-
-        // vm.$watch('message', function (newValue, oldValue) {
-        //     console.log('watch Old value: ' + oldValue)
-        //     console.log('watch New value: ' + newValue)
-        // })
-
         setTimeout(() => {
-            vm.message = 'Hello React.js!'
+            vm.fristName = 'hehe'
+            vm.fristName
+            vm.fristName
         }, 1000);
     </script>
 </body>

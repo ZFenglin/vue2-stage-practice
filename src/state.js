@@ -1,3 +1,4 @@
+import Dep from "./Observe/dep"
 import { observe } from "./Observe/index"
 import Watcher from "./Observe/wathcer"
 import { isFunction } from "./utils"
@@ -19,6 +20,9 @@ export function initState(vm) {
     }
     if (opts.watch) {
         initWatch(vm, opts.watch)
+    }
+    if (opts.computed) {
+        initComputed(vm, opts.computed)
     }
 }
 
@@ -60,4 +64,38 @@ function initWatch(vm, watch) {
 
 function createWatcher(vm, key, handler) {
     return vm.$watch(key, handler)
+}
+
+function initComputed(vm, computed) {
+    const watchers = vm._computedWatchers = Object.create(null)
+    for (const key in computed) {
+        const userDef = computed[key]
+        let getter = typeof userDef === 'function' ? userDef : userDef.get
+        watchers[key] = new Watcher(vm, getter, () => { }, { lazy: true }) // lazy 默认不直接执行
+        defineComputed(vm, key, userDef)
+    }
+}
+
+function createComputedGetter(key) {
+    return function computedGetter() {
+        let watcher = this._computedWatchers[key]
+        if (watcher.dirty) {
+            watcher.evaluate()
+        }
+        if (Dep.target) {
+            watcher.depend()
+        }
+        return watcher.value
+    }
+}
+
+function defineComputed(vm, key, userDef) {
+    let shareProperty = {}
+    if (typeof userDef === 'function') {
+        shareProperty.get = userDef
+    } else {
+        shareProperty.get = createComputedGetter(key)
+        shareProperty.set = userDef.set || (() => { })
+    }
+    Object.defineProperty(vm, key, shareProperty)
 }
