@@ -10,7 +10,7 @@
 
 <body>
     <div id="app" a="1" style="color: blue;font-size: 12px;">
-        <p>111{{obj}}222</p>
+        <p>111{{arr}}222</p>
     </div>
     <script src="./dist/vue.js"></script>
     <script>
@@ -25,12 +25,8 @@
         vm.$mount('#app')
 
         setTimeout(() => {
-            vm.obj.a.a = 2
-            vm.obj.a.a = 4
-            // vm.arr[0].push(6)
-            setTimeout(() => {
-                vm.obj.a.a = 3
-            }, 1000);
+            vm.arr.pop()
+            vm.arr.push(6)
         }, 1000);
     </script>
 </body>
