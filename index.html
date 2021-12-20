@@ -10,23 +10,44 @@
 
 <body>
     <div id="app" a="1" style="color: blue;font-size: 12px;">
-        <p>111{{arr}}222</p>
+        <p>{{message}}</p>
     </div>
     <script src="./dist/vue.js"></script>
     <script>
         let vm = new Vue({
             data() {
                 return {
-                    arr: [[1, 2], 3, 4, 5],
-                    obj: { a: { a: 1 } } // JSON.stringify(obj)会不断调用每一个属性的get
+                    message: 'Hello Vue.js!'
                 }
             },
+            watch: {
+                // // 1. 直接写函数
+                // message(newValue, oldValue) {
+                //     console.log('Old value: ' + oldValue)
+                //     console.log('New value: ' + newValue)
+                // },
+                // 2. 直接写数组(多个监听器)
+                message: [
+                    function (newValue, oldValue) {
+                        console.log('Old value: ' + oldValue)
+                        console.log('New value: ' + newValue)
+                    },
+                    function (newValue, oldValue) {
+                        console.log('Old2 value: ' + oldValue)
+                        console.log('New2 value: ' + newValue)
+                    },
+                ],
+            }
         })
         vm.$mount('#app')
 
+        // vm.$watch('message', function (newValue, oldValue) {
+        //     console.log('watch Old value: ' + oldValue)
+        //     console.log('watch New value: ' + newValue)
+        // })
+
         setTimeout(() => {
-            vm.arr.pop()
-            vm.arr.push(6)
+            vm.message = 'Hello React.js!'
         }, 1000);
     </script>
 </body>

@@ -11,18 +11,31 @@ class Watcher {
         this.cb = cb
         this.options = options
 
-        this.getter = expOrFn
+        this.user = !!options.user
+        if (typeof expOrFn === 'string') {
+            this.getter = function () {
+                let path = expOrFn.split('.')
+                let val = vm
+                for (let i = 0; i < path.length; i++) {
+                    val = val[path[i]]
+                }
+                return val
+            }
+        } else {
+            this.getter = expOrFn
+        }
 
         this.deps = []
         this.depIds = new Set()
 
-        this.get()
+        this.value = this.get()
     }
 
     get() {
         pushTarget(this)
-        this.getter()
+        const value = this.getter()
         popTarget()
+        return value
     }
 
     update() {
@@ -30,7 +43,11 @@ class Watcher {
     }
 
     run() {
-        this.get()
+        const oldVal = this.value
+        this.value = this.get()
+        if (this.user && this.cb) {
+            this.cb.call(this.vm, this.value, oldVal)
+        }
     }
 
     addDep(dep) {
