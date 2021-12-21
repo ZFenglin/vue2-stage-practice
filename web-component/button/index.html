@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 组件使用 -->
+    <fl-button type="primary">primary</fl-button>
+    <fl-button type="default">default</fl-button>
+    <!-- 模板设置 -->
+    <template id="btn">
+        <button class="fl-button">
+            <slot>默认内容</slot>
+        </button>
+    </template>
+    <script src="./index.js" type="module"></script>
+</body>
+
+</html>
