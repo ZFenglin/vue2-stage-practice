@@ -9,31 +9,45 @@
 </head>
 
 <body>
-    <div id="app" a="1">{{fullName}}</div>
     <script src="./dist/vue.js"></script>
+    <div id="app">{{msg}}</div>
     <script>
         // viewModel 数据模型
         // 典型的MVVM view vm model
+        Vue.mixin({
+            beforeCreate() {
+                console.log('beforeCreate1');
+            }
+        })
+        Vue.mixin({
+            beforeCreate() {
+                console.log('beforeCreate2');
+            }
+        })
+        Vue.mixin({
+            created() {
+                console.log('created1');
+            }
+        })
+        Vue.mixin({
+            mounted() {
+                console.log('mounted');
+            }
+        })
         let vm = new Vue({
             el: '#app',
             data() {
                 return {
-                    firstName: 'John',
-                    lastName: 'Doe',
+                    msg: '生命周期测试',
                 }
             },
-            computed: {
-                fullName: {
-                    get: function () {
-                        return this.firstName + ' ' + this.lastName
-                    },
-                }
-            }
+            beforeCreate() {
+                console.log('beforeCreate3')
+            },
+            created() {
+                console.log('created2')
+            },
         })
-        setTimeout(() => {
-            vm.firstName = 'Jane'
-        }, 1000);
-
     </script>
 </body>
 

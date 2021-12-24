@@ -67,3 +67,60 @@ export function nextTick(cb) {
         timer(flushCallbacks)
     }
 }
+
+/**
+ * 配置及合并策略
+ */
+// 生命周期合并策略
+function mergeHook(parentVal, childVal) {
+    if (childVal) {
+        if (parentVal) {
+            return parentVal.concat(childVal)
+        } else {
+            return [childVal]
+        }
+    } else {
+        return parentVal
+    }
+}
+
+// 配置合并策略
+let strats = {}
+let lifecycleHooks = [
+    'beforeCreate',
+    'created',
+    'beforeMount',
+    'mounted',
+    'beforeUpdate',
+    'updated',
+    'beforeDestroy',
+    'destroyed',
+    'activated',
+    'deactivated'
+]
+lifecycleHooks.forEach(hook => strats[hook] = mergeHook)
+
+export function mergeOptions(parent, child) {
+    const options = {}
+    for (let key in parent) {
+        mergeField(key)
+    }
+    for (const key in child) {
+        if (parent.hasOwnProperty(key)) {
+            continue
+        }
+        mergeField(key)
+    }
+    function mergeField(key) {
+        let parentVal = parent[key]
+        let childVal = child[key]
+        if (strats[key]) {
+            options[key] = strats[key](parentVal, childVal)
+        } else if (isObject(parentVal) && isObject(childVal)) {
+            options[key] = { ...parentVal, ...childVal }
+        } else {
+            options[key] = childVal || parentVal
+        }
+    }
+    return options
+}

@@ -11,9 +11,18 @@ export function lifecycleMixin(Vue) {
 }
 
 export function mountComponent(vm) {
+    callHook(vm, 'beforeMount')
     let updateComponent = () => {
         vm._update(vm._render())
     }
     // 创建渲染Watcher
     new Watcher(vm, updateComponent, () => { }, true)// true 表示为渲染Watcher
+    callHook(vm, 'mounted')
+}
+
+export function callHook(vm, hook) {
+    let handlers = vm.$options[hook]
+    if (handlers) {
+        handlers.forEach(handler => handler.call(vm))
+    }
 }

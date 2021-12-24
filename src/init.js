@@ -1,6 +1,7 @@
 import { compileToFunction } from "./Compiler/index"
-import { mountComponent } from "./lifecycle"
+import { callHook, mountComponent } from "./lifecycle"
 import { initState } from "./state"
+import { mergeOptions } from "./utils"
 
 /**
  * 初始化原型方法混入
@@ -10,9 +11,10 @@ export function initMixin(Vue) {
     // 初始化处理
     Vue.prototype._init = function (options) {
         const vm = this
-        vm.$options = options
+        vm.$options = mergeOptions(this.constructor.options, options) // this.constructor.options 即为全局配置，即Vue.options
+        callHook(vm, 'beforeCreate')
         initState(vm)
-
+        callHook(vm, 'created')
         // 元素挂载完成后，触发生命周期钩子
         if (vm.$options.el) {
             vm.$mount(vm.$options.el)
