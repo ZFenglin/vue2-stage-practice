@@ -4,7 +4,7 @@ function vnode(vm, tag, data, key, children, text, componentOptions) {
     return { vm, tag, data, key, children, text, componentOptions }
 }
 
-export function createElement(vm, tag, data = {}, ...children) {
+export function createElement(vm, tag, data = {}, children) {
     if (isReservedTag(tag)) {
         return vnode(vm, tag, data, data.key, children, undefined)
     } else {

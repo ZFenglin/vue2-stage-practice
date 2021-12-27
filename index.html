@@ -10,28 +10,18 @@
 
 <body>
     <script src="./dist/vue.js"></script>
-    <div id="app">
-        <my-button> </my-button>
-    </div>
+    <!-- <div id="app">
+    </div> -->
     <script>
-        Vue.component('my-button', {
-            template: '<button>"golbal"</button>'
-        })
-        const vm = new Vue({
-            el: '#app',
-            data() {
-                return {
-                    msg: 'hello world'
-                }
-            },
-            components: {
-                // 优先局部，即原型链的__proto__
-                'my-button': {
-                    template: '<button>"inner"</button>'
-                }
-            },
-        })
-        console.log(vm.$options.components)
+        // let vm = new Vue({
+        //     el: '#app',
+        //     data: {
+        //         message: 'Hello Vue!'
+        //     }
+        // })
+        // setTimeout(() => {
+        //     vm.message = 'zfl'
+        // }, 3000);
     </script>
 </body>
 

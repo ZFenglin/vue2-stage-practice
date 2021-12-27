@@ -31,7 +31,7 @@ function gen(el) {
         let text = el.text
         if (!defaultTagRE.test(text)) {
             // 没有模板语法
-            return `_v(${text})`
+            return `_v(${JSON.stringify(text)})`
         } else {
             // 存在模板语法
             const token = []
@@ -61,7 +61,7 @@ function gen(el) {
  */
 function genChildren(el) {
     const children = el.children
-    if (children) {
+    if (children.length > 0) {
         return children.map(child => gen(child)).join(',')
     }
     return false

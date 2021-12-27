@@ -1,7 +1,7 @@
 import { createElement, createTextElement } from "./vdom/index"
 
 export function renderMixin(Vue) {
-    Vue.prototype._c = function (tag, data, children) {
+    Vue.prototype._c = function (tag, data, ...children) {
 
         return createElement(this, tag, data, children)
     }

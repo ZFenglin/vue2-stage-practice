@@ -5,7 +5,15 @@ import { patch } from "./vdom/patch"
 export function lifecycleMixin(Vue) {
     Vue.prototype._update = function (vnode) {
         const vm = this
-        vm.$el = patch(vm.$el, vnode)
+        const prevVnode = vm._vnode
+        if (prevVnode) {
+            // 后续渲染
+            vm.$el = patch(prevVnode, vnode)
+        } else {
+            // 首次渲染
+            vm.$el = patch(vm.$el, vnode)
+        }
+        vm._vnode = vnode
     }
     Vue.prototype.$nextTick = nextTick
 }
