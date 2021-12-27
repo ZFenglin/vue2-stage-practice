@@ -16,56 +16,54 @@ const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s
 const defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g // {{}}
 // 特殊标签 <!doctype html> <!---->
 
-/**
+export function parserHtml(html) {
+    /**
  * 创建ATS对象
  * @param {*} tagName 
  * @param {*} attrs 
  * @returns 
  */
-function createASTElement(tagName, attrs) {
-    return {
-        tag: tagName,
-        type: 1,
-        attrs: attrs,
-        parent: null,
-        children: [],
+    function createASTElement(tagName, attrs) {
+        return {
+            tag: tagName,
+            type: 1,
+            attrs: attrs,
+            parent: null,
+            children: [],
+        }
     }
-}
 
-// 利用栈处理元素间的关系
-let root = null
-let stack = []
-function start(tagName, attributes) {
-    const el = createASTElement(tagName, attributes)
-    if (!root) {
-        root = el
+    // 利用栈处理元素间的关系
+    let root = null
+    let stack = []
+    function start(tagName, attributes) {
+        const el = createASTElement(tagName, attributes)
+        if (!root) {
+            root = el
+        }
+        if (stack.length) {
+            const parent = stack[stack.length - 1]
+            el.parent = parent
+            parent.children.push(el)
+        }
+        stack.push(el)
     }
-    if (stack.length) {
+    function end(tagName) {
+        const el = stack.pop()
+        if (el.tag !== tagName) throw new Error(`标签不匹配`)
+    }
+    function chars(text) {
+        text = text.replace(/\s/g, '')
         const parent = stack[stack.length - 1]
-        el.parent = parent
-        parent.children.push(el)
-    }
-    stack.push(el)
-}
-function end(tagName) {
-    const el = stack.pop()
-    if (el.tag !== tagName) throw new Error(`标签不匹配`)
-}
-function chars(text) {
-    text = text.replace(/\s/g, '')
-    const parent = stack[stack.length - 1]
-    if (text) {
-        parent.children.push({
-            type: 3,
-            text: text,
-        })
+        if (text) {
+            parent.children.push({
+                type: 3,
+                text: text,
+            })
+        }
+
     }
 
-}
-
-
-
-export function parserHtml(html) {
     /**
      * 处理标签前进
      * @param {*} len 

@@ -71,19 +71,6 @@ export function nextTick(cb) {
 /**
  * 配置及合并策略
  */
-// 生命周期合并策略
-function mergeHook(parentVal, childVal) {
-    if (childVal) {
-        if (parentVal) {
-            return parentVal.concat(childVal)
-        } else {
-            return [childVal]
-        }
-    } else {
-        return parentVal
-    }
-}
-
 // 配置合并策略
 let strats = {}
 let lifecycleHooks = [
@@ -99,6 +86,30 @@ let lifecycleHooks = [
     'deactivated'
 ]
 lifecycleHooks.forEach(hook => strats[hook] = mergeHook)
+
+// 生命周期合并策略
+function mergeHook(parentVal, childVal) {
+    if (childVal) {
+        if (parentVal) {
+            return parentVal.concat(childVal)
+        } else {
+            return [childVal]
+        }
+    } else {
+        return parentVal
+    }
+}
+
+// 组件配置合并策略
+strats.components = function (parentVal, childVal) {
+    let options = Object.create(parentVal)
+    if (childVal) {
+        for (let key in childVal) {
+            options[key] = childVal[key]
+        }
+    }
+    return options
+}
 
 export function mergeOptions(parent, child) {
     const options = {}
@@ -123,4 +134,10 @@ export function mergeOptions(parent, child) {
         }
     }
     return options
+}
+
+
+export function isReservedTag(str) {
+    let reservedTag = 'a,div,span,img,input,button,textarea,form,p,h1,h2,h3,h4,h5,h6,ul,li,ol,dl,dt,dd,table,tr,th,td,select,option,optgroup,meta,link,style,script,head,title,body,html'
+    return reservedTag.includes(str)
 }

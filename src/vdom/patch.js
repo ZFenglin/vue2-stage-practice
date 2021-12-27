@@ -5,6 +5,9 @@
  * @returns 
  */
 export function patch(oldNode, vnode) {
+    if (!oldNode) {
+        return createElm(vnode)
+    }
     if (oldNode.nodeType == 1) {
         const parentElm = oldNode.parentNode
         let elm = createElm(vnode)
@@ -13,6 +16,17 @@ export function patch(oldNode, vnode) {
         return elm
     }
 }
+
+function createComponent(vnode) {
+    let i = vnode.data
+    if ((i = i.hook) && (i = i.init)) {
+        i(vnode)
+    }
+    if (vnode.componentInstance) {
+        return true
+    }
+}
+
 /**
  * 创建DOM元素
  * @param {*} vnode 
@@ -21,6 +35,9 @@ export function patch(oldNode, vnode) {
 function createElm(vnode) {
     let { tag, children, text } = vnode
     if (typeof tag === 'string') {
+        if (createComponent(vnode)) {
+            return vnode.componentInstance.$el
+        }
         vnode.el = document.createElement(tag)
         children.forEach(child => {
             vnode.el.appendChild(createElm(child))

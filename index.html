@@ -10,44 +10,28 @@
 
 <body>
     <script src="./dist/vue.js"></script>
-    <div id="app">{{msg}}</div>
+    <div id="app">
+        <my-button> </my-button>
+    </div>
     <script>
-        // viewModel 数据模型
-        // 典型的MVVM view vm model
-        Vue.mixin({
-            beforeCreate() {
-                console.log('beforeCreate1');
-            }
+        Vue.component('my-button', {
+            template: '<button>"golbal"</button>'
         })
-        Vue.mixin({
-            beforeCreate() {
-                console.log('beforeCreate2');
-            }
-        })
-        Vue.mixin({
-            created() {
-                console.log('created1');
-            }
-        })
-        Vue.mixin({
-            mounted() {
-                console.log('mounted');
-            }
-        })
-        let vm = new Vue({
+        const vm = new Vue({
             el: '#app',
             data() {
                 return {
-                    msg: '生命周期测试',
+                    msg: 'hello world'
                 }
             },
-            beforeCreate() {
-                console.log('beforeCreate3')
-            },
-            created() {
-                console.log('created2')
+            components: {
+                // 优先局部，即原型链的__proto__
+                'my-button': {
+                    template: '<button>"inner"</button>'
+                }
             },
         })
+        console.log(vm.$options.components)
     </script>
 </body>
 
